@@ -35,7 +35,7 @@ const Login = () => {
   const [passwordVisible, _setPasswordVisible] = React.useState(false);
   const history = useHistory();
   return (
-    <AuthLayout route='/signup' >
+    <AuthLayout route='/signup'>
       <button
         onClick={() => history.push(`/signup`)}
         className='button topButton'
@@ -45,7 +45,9 @@ const Login = () => {
       <Container className='columns'>
         <div className='column is-5'>
           <h1 className='title is-3 has-text-weight-semi-bold'>Login</h1>
-          <input className='input' placeholder='Email' />
+          <form autoComplete="none">
+            <input className='input' placeholder='Email' />
+          </form>
           <div className='passwordDiv'>
             <input
               className='input passwordInput'
@@ -57,7 +59,11 @@ const Login = () => {
               onClick={() => _setPasswordVisible(!passwordVisible)}
             >
               <span className='icon is-size-4'>
-                <i className={passwordVisible ? "fas fa-eye-slash" : "fas fa-eye"} />
+                <i
+                  className={
+                    passwordVisible ? "fas fa-eye-slash" : "fas fa-eye"
+                  }
+                />
               </span>
             </div>
           </div>
