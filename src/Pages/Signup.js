@@ -1,8 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
+
 import AuthLayout from "../components/AuthLayout";
 import { theme } from "./../utils/theme";
+import firebase from "../firebase/config";
 
 const Container = styled.div`
   padding-top: 3rem;
@@ -18,14 +20,73 @@ const Container = styled.div`
   }
 `;
 
+function validateEmail(val) {
+  var re = /\S+@\S+\.\S+/;
+  return re.test(val);
+}
+
 const Signup = () => {
   const history = useHistory();
+
+  const [values, setValues] = React.useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmedPassword: "",
+  });
+
+  const OnChangeVal = (key, event) => {
+    setValues({ ...values, [key]: event.target.value });
+  };
+
+  function navigateToLogin() {
+    history.push(`/`);
+  }
+
+  const onSubmit = () => {
+    for (let key in values) {
+      if (values[key] === "") {
+        return alert(`Please provide a ${key}`);
+      }
+    }
+    if (values.confirmedPassword !== values.password) {
+      return alert(`The two passwords and don't match`);
+    }
+    if (values.password.length < 6) {
+      return alert(`Password should be bigger then 6 characters`);
+    }
+    if (!validateEmail(values.email)) {
+      return alert(`Provide a valid email please`);
+    }
+
+    SignUpWithFirebase();
+  };
+
+  const SignUpWithFirebase = () => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(values.email, values.password)
+      .then(async (credentials) => {
+        const uid = credentials.user.uid;
+        localStorage.setItem("uid", uid);
+        firebase.database().ref(`users/${uid}`).set({
+          name: values.name,
+          email: values.email,
+          uid: uid,
+          posts: 0,
+          following: 0,
+          followers: 0,
+        });
+        history.push(`/feed`);
+      })
+      .catch((err) => {
+        return alert(err.message);
+      });
+  };
+
   return (
-    <AuthLayout buttonText='Login' >
-      <button
-        onClick={() => history.push(`/`)}
-        className='button topButton'
-      >
+    <AuthLayout buttonText='Login'>
+      <button onClick={navigateToLogin} className='button topButton'>
         Login
       </button>
       <Container className='columns'>
@@ -33,16 +94,41 @@ const Signup = () => {
           <h1 className='title is-3 has-text-weight-semi-bold'>
             Create Account
           </h1>
-          <input className='input' placeholder='Name' />
-          <input className='input' placeholder='Email' />
-
-          <input className='input' placeholder='Password' />
-
-          <input className='input' placeholder='Confirm Password' />
-
+          <input
+            onChange={(event) => OnChangeVal("name", event)}
+            value={values.name}
+            className='input'
+            placeholder='Name'
+          />
+          <input
+            onChange={(event) => OnChangeVal("email", event)}
+            value={values.email}
+            className='input'
+            placeholder='Email'
+          />
+          <form autoComplete='none'>
+            <input
+              onChange={(event) => OnChangeVal("password", event)}
+              value={values.password}
+              className='input'
+              placeholder='Password'
+              type='password'
+            />
+          </form>
+          <form autoComplete='none'>
+            <input
+              onChange={(event) => OnChangeVal("confirmedPassword", event)}
+              value={values.confirmedPassword}
+              className='input'
+              placeholder='Confirm Password'
+              type='password'
+            />
+          </form>
           <div className='columns paddingTop is-vcentered'>
             <div className='column is-12 alignToRight'>
-              <button className='button is-primary'>Sign Up</button>
+              <button onClick={onSubmit} className='button is-primary'>
+                Sign Up
+              </button>
             </div>
           </div>
         </div>

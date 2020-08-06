@@ -22,7 +22,7 @@ const Container = styled.div`
   }
 `;
 
-const AuthLayout = ({ children, }) => {
+const AuthLayout = ({ children }) => {
   return (
     <Container className='container'>
       <section className='section'>
