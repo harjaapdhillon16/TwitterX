@@ -69,6 +69,26 @@ const UserCard = ({ name, followers, uid }) => {
     _setFollow(true);
   };
 
+  const FetchFollowers = async () => {
+    const followerCount = await firebase
+      .database()
+      .ref(`users/${uid}/followers`)
+      .once("value");
+    return followerCount.val();
+  };
+
+  const [followerCounts, _setFollowerCount] = React.useState(followers);
+
+  React.useEffect(()=>{
+    async function setFollowers(){
+      const followersCounted = await FetchFollowers();
+      _setFollowerCount(followersCounted)
+    }
+   if(followerCounts===undefined){
+    setFollowers()
+   }
+  },[])
+
   return (
     <Container className='columns is-vcentered'>
       <div className='column is-1'>
@@ -78,7 +98,9 @@ const UserCard = ({ name, followers, uid }) => {
         <h1 className='title is-5'>{name}</h1>
         {followers !== undefined ? (
           <h1 className='subtitle is-6'>Following : {followers}</h1>
-        ) : null}
+        ) : (
+          <h1 className='subtitle is-6'>Following : {followerCounts}</h1>
+        )}
       </div>
       <div className='column is-3'>
         {followed ? (

@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { theme } from "../utils/theme";
+import firebase from "../firebase/config";
 
 const Container = styled.div`
   .BorderCircle {
@@ -50,6 +51,7 @@ const TweetComponent = ({ noShadow, name, text, time }) => {
     var minutes = Math.floor(milliseconds / 60000);
     _setMinutes(minutes);
   }, [time]);
+
   return (
     <Container noShadow={noShadow} className='card'>
       <section className=''>
