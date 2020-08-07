@@ -33,7 +33,13 @@ const WriteButton = () => {
       firebase
         .database()
         .ref(`feed/`)
-        .push({ uid: uid, time: Date.now(), text });
+        .push({
+          uid,
+          time: Date.now(),
+          text,
+          name: localStorage.getItem("name"),
+        });
+      _setText("");
       _setWriteMode(false);
     }
     firebase
@@ -73,7 +79,10 @@ const WriteButton = () => {
         </>
       ) : (
         <button
-          onClick={() => _setWriteMode(true)}
+          onClick={() => {
+            _setWriteMode(true);
+            _setText("");
+          }}
           className='button is-primary'
         >
           Write

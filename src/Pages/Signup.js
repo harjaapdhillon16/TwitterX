@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
+import Loader from "react-loader-spinner";
 
 import AuthLayout from "../components/AuthLayout";
 import { theme } from "./../utils/theme";
@@ -25,6 +26,10 @@ function validateEmail(val) {
   return re.test(val);
 }
 
+const Loading = () => (
+  <Loader type='Puff' color='#00BFFF' height={40} width={40} />
+);
+
 const Signup = () => {
   const history = useHistory();
 
@@ -34,6 +39,8 @@ const Signup = () => {
     password: "",
     confirmedPassword: "",
   });
+
+  const [load, _setLoad] = React.useState(<div />);
 
   const OnChangeVal = (key, event) => {
     setValues({ ...values, [key]: event.target.value });
@@ -58,7 +65,7 @@ const Signup = () => {
     if (!validateEmail(values.email)) {
       return alert(`Provide a valid email please`);
     }
-
+    _setLoad(<Loading />);
     SignUpWithFirebase();
   };
 
@@ -80,6 +87,7 @@ const Signup = () => {
         history.push(`/feed`);
       })
       .catch((err) => {
+        _setLoad(<div />);
         return alert(err.message);
       });
   };
@@ -125,7 +133,8 @@ const Signup = () => {
             />
           </form>
           <div className='columns paddingTop is-vcentered'>
-            <div className='column is-12 alignToRight'>
+            <div className='column is-6 alignToRight'>{load}</div>
+            <div className='column is-6 alignToRight'>
               <button onClick={onSubmit} className='button is-primary'>
                 Sign Up
               </button>

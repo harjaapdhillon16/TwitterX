@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
+import Loader from "react-loader-spinner";
 
 import AuthLayout from "../components/AuthLayout";
 import { theme } from "./../utils/theme";
@@ -37,8 +38,14 @@ function validateEmail(val) {
   return re.test(val);
 }
 
+const Loading = () => (
+  <Loader type='Puff' color='#00BFFF' height={40} width={40} />
+);
+
 const Login = () => {
   const [passwordVisible, _setPasswordVisible] = React.useState(false);
+
+  const [load, _setLoad] = React.useState(<div />);
 
   const history = useHistory();
 
@@ -65,6 +72,7 @@ const Login = () => {
     if (!validateEmail(values.email)) {
       return alert("Please provide a valid email");
     }
+    _setLoad(<Loading />);
     firebase
       .auth()
       .signInWithEmailAndPassword(values.email, values.password)
@@ -72,9 +80,11 @@ const Login = () => {
         const uid = credentials.user.uid;
         localStorage.setItem("uid", uid);
         history.push("/feed");
-      }).catch((err)=>{
-        return alert(err.message)
       })
+      .catch((err) => {
+        _setLoad(<div />);
+        return alert(err.message);
+      });
   };
 
   return (
@@ -118,7 +128,7 @@ const Login = () => {
               )}
             </div>
           </div>
-          <div className='columns paddingTop is-vcentered'>
+          <div className='columns paddingTop is-vcentered is-multiline'>
             <div className='column is-6'>
               <h1 className='title is-6 has-text-weight-semi-bold'>
                 Forgot Password ?
@@ -129,6 +139,7 @@ const Login = () => {
                 Login
               </button>
             </div>
+            <div className='column is-6 alignToRight'>{load}</div>
           </div>
         </div>
       </Container>

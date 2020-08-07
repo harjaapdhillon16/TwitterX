@@ -5,19 +5,22 @@ import Signup from "./Pages/Signup";
 import FeedPage from "./Pages/FeedPage";
 import UsersPage from "./Pages/UsersPage";
 import ProfilePage from "./Pages/ProfilePage";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
+
 
 export default function BasicExample() {
   return (
     <Router>
       <Switch>
-        <Route exact path='/'>
+        <PublicRoute exact path='/'>
           <Login />
-        </Route>
-        <Route path='/signup'>
+        </PublicRoute>
+        <PublicRoute path='/signup'>
           <Signup />
-        </Route>
+        </PublicRoute>
         <PrivateRoute path='/feed'>
           <FeedPage />
         </PrivateRoute>

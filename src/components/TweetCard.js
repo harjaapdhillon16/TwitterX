@@ -30,6 +30,11 @@ const Container = styled.div`
     top: 30%;
     right: 0px;
   }
+  .time {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
   overflow: hidden;
   padding: 1rem 0rem;
   box-shadow: ${(props) => (props.noShadow ? "none" : "")};
@@ -38,7 +43,13 @@ const Container = styled.div`
   }
 `;
 
-const TweetComponent = ({ noShadow, name, text }) => {
+const TweetComponent = ({ noShadow, name, text, time }) => {
+  const [minutes, _setMinutes] = React.useState(null);
+  React.useEffect(() => {
+    const milliseconds = Date.now() - time;
+    var minutes = Math.floor(milliseconds / 60000);
+    _setMinutes(minutes);
+  }, [time]);
   return (
     <Container noShadow={noShadow} className='card'>
       <section className=''>
@@ -50,6 +61,7 @@ const TweetComponent = ({ noShadow, name, text }) => {
             <h1 className='title is-5'>{name}</h1>
             <h1 className='title is-6 has-text-weight-normal'>{text}</h1>
           </div>
+          <div className='time'>{minutes} min</div>
           <div className='RedSemiCircle' />
         </div>
       </section>

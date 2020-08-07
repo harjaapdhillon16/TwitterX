@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import styled from "styled-components";
 
@@ -24,6 +25,7 @@ const UserPostFeed = () => {
           const details = data.val();
           arrayData.push(details);
           if (Object.keys(snap.val()).length === counter) {
+            arrayData.reverse();
             _setPosts([...arrayData]);
           }
           counter++;
